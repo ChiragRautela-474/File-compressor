@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File Compressor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top left, #74ebd5, #ACB6E5);
+            animation: bgShift 10s ease infinite alternate;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 400px;
+            max-width: 90%;
+            text-align: center;
+            animation: fadeIn 1s ease, pulse 6s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(116, 235, 213, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(116, 235, 213, 0.4); }
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            color: #555;
+            font-weight: 500;
+            text-align: left;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        select:hover {
+            border-color: #74ebd5;
+            box-shadow: 0 0 8px rgba(116, 235, 213, 0.5);
+        }
+
+        .custom-file-upload {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .custom-file-upload input[type="file"] {
+            display: none;
+        }
+
+        .custom-file-upload label {
+            display: inline-block;
+            background: #74ebd5;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .custom-file-upload label:hover {
+            background: #4cb8c4;
+            box-shadow: 0 0 10px rgba(76, 184, 196, 0.5);
+        }
+
+        #file-name {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        small {
+            color: #888;
+            font-size: 12px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            background: linear-gradient(to right, #74ebd5, #4cb8c4);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(76, 184, 196, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #4cb8c4, #3aaba3);
+            box-shadow: 0 8px 22px rgba(76, 184, 196, 0.5);
+            transform: translateY(-2px);
+        }
+
+        button:hover::after {
+            content: " 😺";
+            animation: rotate 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                width: 90%;
+                padding: 25px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📦 File Compression & Optimization</h2>
+        <p class="subtitle">Upload a file and choose a method to compress, decompress, or optimize it.</p>
+
+        <form action="/compress" method="post" enctype="multipart/form-data">
+            <label for="mode">Choose Mode:</label>
+            <select name="mode" id="mode" required>
+                <option value="1">📉 Huffman Compression</option>
+                <option value="2">🧬 RLE Compression</option>
+                <option value="3">🔓 Huffman Decompression</option>
+                <option value="4">🧹 Optimize File</option>
+            </select>
+
+            <label for="file">Upload File:</label>
+            <div class="custom-file-upload">
+                <input type="file" name="file" id="file" required onchange="updateFileName(this)">
+                <label for="file">📁 Choose File</label>
+                <span id="file-name">No file chosen</span>
+            </div>
+
+            <button type="submit">Submit</button>
+            <small>Accepted format: .txt</small>
+        </form>
+    </div>
+
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name || "No file chosen";
+            document.getElementById("file-name").textContent = fileName;
+        }
+    </script>
+</body>
+</html>
